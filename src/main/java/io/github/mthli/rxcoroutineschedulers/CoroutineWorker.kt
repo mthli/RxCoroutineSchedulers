@@ -18,18 +18,23 @@ package io.github.mthli.rxcoroutineschedulers
 
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import java.util.concurrent.TimeUnit
 
-internal class CoroutineWorker : Scheduler.Worker() {
+internal class CoroutineWorker(
+    private val dispatcher: CoroutineDispatcher,
+    private val scope: CoroutineScope? = null
+) : Scheduler.Worker() {
     override fun isDisposed(): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun schedule(run: Runnable?, delay: Long, unit: TimeUnit?): Disposable {
+    override fun dispose() {
         TODO("Not yet implemented")
     }
 
-    override fun dispose() {
+    override fun schedule(run: Runnable?, delay: Long, unit: TimeUnit?): Disposable {
         TODO("Not yet implemented")
     }
 }

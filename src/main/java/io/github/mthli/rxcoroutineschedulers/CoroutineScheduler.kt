@@ -18,9 +18,11 @@ package io.github.mthli.rxcoroutineschedulers
 
 import io.reactivex.rxjava3.core.Scheduler
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 
-class CoroutineScheduler(private val dispatcher: CoroutineDispatcher) : Scheduler() {
-    override fun createWorker(): Worker {
-        TODO("Not yet implemented")
-    }
+class CoroutineScheduler(
+    private val dispatcher: CoroutineDispatcher,
+    private val scope: CoroutineScope? = null
+) : Scheduler() {
+    override fun createWorker(): Worker = CoroutineWorker(dispatcher)
 }
