@@ -16,16 +16,19 @@
 
 package io.github.mthli.rxcoroutineschedulers
 
-import io.reactivex.rxjava3.core.Scheduler
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
+import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.Job
 
-/**
- * Refer to [io.reactivex.rxjava3.internal.schedulers.NewThreadScheduler] implementation.
- */
-internal class CoroutineScheduler(
-    private val dispatcher: CoroutineDispatcher,
-    private val scope: CoroutineScope? = null
-) : Scheduler() {
-    override fun createWorker(): Worker = CoroutineWorker(dispatcher, scope)
+internal class JobDisposable(private val job: Job) : Disposable {
+    @Volatile
+    private var isDisposed = false
+
+    override fun isDisposed(): Boolean = isDisposed
+
+    override fun dispose() {
+        if (!isDisposed) {
+            isDisposed = true
+            job.cancel()
+        }
+    }
 }

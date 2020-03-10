@@ -18,23 +18,46 @@ package io.github.mthli.rxcoroutineschedulers
 
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.Disposable
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
+import io.reactivex.rxjava3.internal.disposables.EmptyDisposable
+import io.reactivex.rxjava3.plugins.RxJavaPlugins
+import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 
+/**
+ * Refer to [io.reactivex.rxjava3.internal.schedulers.NewThreadWorker] implementation.
+ */
 internal class CoroutineWorker(
     private val dispatcher: CoroutineDispatcher,
     private val scope: CoroutineScope? = null
 ) : Scheduler.Worker() {
-    override fun isDisposed(): Boolean {
-        TODO("Not yet implemented")
-    }
+    @Volatile
+    private var isDisposed = false
+    private var job: Job? = null
+
+    override fun isDisposed(): Boolean = isDisposed
 
     override fun dispose() {
-        TODO("Not yet implemented")
+        if (!isDisposed) {
+            isDisposed = true
+            job?.cancel()
+        }
     }
 
-    override fun schedule(run: Runnable?, delay: Long, unit: TimeUnit?): Disposable {
-        TODO("Not yet implemented")
+    override fun schedule(run: Runnable, delay: Long, unit: TimeUnit): Disposable {
+        if (isDisposed) {
+            return EmptyDisposable.INSTANCE
+        }
+
+        // Should decorated outside launch
+        val decoratedRun = RxJavaPlugins.onSchedule(run)
+
+        job = (scope ?: GlobalScope).launch {
+            withContext(dispatcher) {
+                if (delay > 0L) delay(unit.toMillis(delay)) // non-blocking
+                decoratedRun.run()
+            }
+        }
+
+        return job?.let { JobDisposable(it) } ?: throw NullPointerException("schedule job but null")
     }
 }

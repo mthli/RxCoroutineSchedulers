@@ -21,5 +21,4 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 
 @Suppress("unused")
-fun CoroutineDispatcher.asScheduler(scope: CoroutineScope? = null): Scheduler
-        = CoroutineScheduler(this, scope)
+fun CoroutineDispatcher.asScheduler(scope: CoroutineScope? = null): Scheduler = CoroutineScheduler(this, scope)
