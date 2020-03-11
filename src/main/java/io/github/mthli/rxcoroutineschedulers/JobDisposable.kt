@@ -16,7 +16,7 @@
 
 package io.github.mthli.rxcoroutineschedulers
 
-import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Job
 
 internal class JobDisposable(private val job: Job) : Disposable {
