@@ -16,7 +16,7 @@
 
 package io.github.mthli.rxcoroutineschedulers
 
-import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.Scheduler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import java.lang.ref.WeakReference
