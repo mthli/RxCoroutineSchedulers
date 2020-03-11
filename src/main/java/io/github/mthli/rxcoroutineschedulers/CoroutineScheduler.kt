@@ -25,7 +25,7 @@ import kotlinx.coroutines.CoroutineScope
  */
 internal class CoroutineScheduler(
     private val dispatcher: CoroutineDispatcher,
-    private val scope: CoroutineScope? = null
+    private val scope: CoroutineScope
 ) : Scheduler() {
     override fun createWorker(): Worker = CoroutineWorker(dispatcher, scope)
 }

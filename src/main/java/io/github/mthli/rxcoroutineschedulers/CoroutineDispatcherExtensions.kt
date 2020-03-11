@@ -19,6 +19,7 @@ package io.github.mthli.rxcoroutineschedulers
 import io.reactivex.rxjava3.core.Scheduler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 
 @Suppress("unused")
-fun CoroutineDispatcher.asScheduler(scope: CoroutineScope? = null): Scheduler = CoroutineScheduler(this, scope)
+fun CoroutineDispatcher.asScheduler(scope: CoroutineScope = GlobalScope): Scheduler = CoroutineScheduler(this, scope)

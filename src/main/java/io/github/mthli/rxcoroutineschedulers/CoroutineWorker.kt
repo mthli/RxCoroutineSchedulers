@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit
  */
 internal class CoroutineWorker(
     private val dispatcher: CoroutineDispatcher,
-    private val scope: CoroutineScope? = null
+    private val scope: CoroutineScope
 ) : Scheduler.Worker() {
     @Volatile
     private var isDisposed = false
@@ -50,8 +50,7 @@ internal class CoroutineWorker(
 
         // Should decorated outside launch
         val decoratedRun = RxJavaPlugins.onSchedule(run)
-
-        job = (scope ?: GlobalScope).launch {
+        job = scope.launch {
             withContext(dispatcher) {
                 if (delay > 0L) delay(unit.toMillis(delay)) // non-blocking
                 decoratedRun.run()
