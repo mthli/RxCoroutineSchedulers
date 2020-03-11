@@ -16,10 +16,10 @@
 
 package io.github.mthli.rxcoroutineschedulers
 
-import io.reactivex.rxjava3.core.Scheduler
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.internal.disposables.EmptyDisposable
-import io.reactivex.rxjava3.plugins.RxJavaPlugins
+import io.reactivex.Scheduler
+import io.reactivex.disposables.Disposable
+import io.reactivex.internal.disposables.EmptyDisposable
+import io.reactivex.plugins.RxJavaPlugins
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
