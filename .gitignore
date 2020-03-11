@@ -23,6 +23,7 @@
 hs_err_pid*
 
 # Others
+target/
 .idea/
 *.iml
 *.DS_Store
