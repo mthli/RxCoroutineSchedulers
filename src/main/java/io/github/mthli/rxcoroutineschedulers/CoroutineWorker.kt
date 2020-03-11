@@ -44,7 +44,8 @@ internal class CoroutineWorker(
     }
 
     override fun schedule(run: Runnable, delay: Long, unit: TimeUnit): Disposable {
-        if (isDisposed) {
+        // job may canceled by scope
+        if (isDisposed || job?.isCancelled == true) {
             return EmptyDisposable.INSTANCE
         }
 
