@@ -21,6 +21,7 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.internal.disposables.EmptyDisposable
 import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import kotlinx.coroutines.*
+import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 /**
@@ -28,7 +29,7 @@ import java.util.concurrent.TimeUnit
  */
 internal class CoroutineWorker(
     private val dispatcher: CoroutineDispatcher,
-    private val scope: CoroutineScope
+    private val scopeRef: WeakReference<CoroutineScope>
 ) : Scheduler.Worker() {
     @Volatile
     private var isDisposed = false
@@ -44,8 +45,8 @@ internal class CoroutineWorker(
     }
 
     override fun schedule(run: Runnable, delay: Long, unit: TimeUnit): Disposable {
-        // job may canceled by scope
-        if (isDisposed || job?.isCancelled == true) {
+        val scope = scopeRef.get()
+        if (scope == null || isDisposed || job?.isCancelled == true) { // job may canceled by scope
             return EmptyDisposable.INSTANCE
         }
 

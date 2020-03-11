@@ -19,6 +19,7 @@ package io.github.mthli.rxcoroutineschedulers
 import io.reactivex.rxjava3.core.Scheduler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import java.lang.ref.WeakReference
 
 /**
  * Refer to [io.reactivex.rxjava3.internal.schedulers.NewThreadScheduler] implementation.
@@ -27,5 +28,5 @@ internal class CoroutineScheduler(
     private val dispatcher: CoroutineDispatcher,
     private val scope: CoroutineScope
 ) : Scheduler() {
-    override fun createWorker(): Worker = CoroutineWorker(dispatcher, scope)
+    override fun createWorker(): Worker = CoroutineWorker(dispatcher, WeakReference(scope))
 }
