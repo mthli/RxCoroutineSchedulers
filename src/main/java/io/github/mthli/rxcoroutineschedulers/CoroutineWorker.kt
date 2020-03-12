@@ -33,32 +33,39 @@ internal class CoroutineWorker(
 ) : Scheduler.Worker() {
     @Volatile
     private var isDisposed = false
-    private var job: Job? = null
+    private var supervisorJob: Job? = null
+
+    init {
+        val scope = scopeRef.get()
+        if (scope != null) {
+            supervisorJob = SupervisorJob(scope.coroutineContext[Job])
+        }
+    }
 
     override fun isDisposed(): Boolean = isDisposed
 
     override fun dispose() {
         if (!isDisposed) {
             isDisposed = true
-            job?.cancel()
+            supervisorJob?.cancel()
         }
     }
 
     override fun schedule(run: Runnable, delay: Long, unit: TimeUnit): Disposable {
-        val scope = scopeRef.get()
-        if (scope == null || isDisposed || job?.isCancelled == true) { // job may canceled by scope
+        val context = supervisorJob ?: return EmptyDisposable.INSTANCE
+        val scope = scopeRef.get() ?: return EmptyDisposable.INSTANCE
+        if (isDisposed || context.isCancelled) {
             return EmptyDisposable.INSTANCE
         }
 
-        // Should decorated outside launch
         val decoratedRun = RxJavaPlugins.onSchedule(run)
-        job = scope.launch {
+        val job = scope.launch(context) {
             withContext(dispatcher) {
                 if (delay > 0L) delay(unit.toMillis(delay)) // non-blocking
                 decoratedRun.run()
             }
         }
 
-        return job?.let { JobDisposable(it) } ?: throw NullPointerException("schedule job but null")
+        return JobDisposable(job)
     }
 }
