@@ -31,7 +31,7 @@ internal class CoroutineWorker(
     private val scope: CoroutineScope
 ) : Scheduler.Worker() {
 
-    private var supervisorJob = SupervisorJob(scope.coroutineContext[Job])
+    private val supervisorJob = SupervisorJob(scope.coroutineContext[Job])
 
     @Volatile
     private var isDisposed = false
