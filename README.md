@@ -48,8 +48,8 @@ And then at your project `build.gradle` ⬇️
 
 ```groovy
 dependencies {
-  // for RxJava2 users, use v2.0.1
-  implementation 'com.github.mthli:RxCoroutineSchedulers:v3.0.1'
+  // for RxJava2 users, use v2.0.2
+  implementation 'com.github.mthli:RxCoroutineSchedulers:v3.0.2'
 }
 ```
 
@@ -70,8 +70,8 @@ At your `pom.xml` ⬇️
   <dependency>
     <groupId>com.github.mthli</groupId>
     <artifactId>RxCoroutineSchedulers</artifactId>
-    <!-- for RxJava2 users, use v2.0.1 -->
-    <version>v3.0.1</version>
+    <!-- for RxJava2 users, use v2.0.2 -->
+    <version>v3.0.2</version>
   </dependency>
 </dependencies>
 ```
