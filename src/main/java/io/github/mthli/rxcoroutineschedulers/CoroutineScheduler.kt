@@ -21,7 +21,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * Refer to [io.reactivex.rxjava3.internal.schedulers.NewThreadScheduler] implementation.
+ * Refer to [io.reactivex.internal.schedulers.NewThreadScheduler] implementation.
  */
 internal class CoroutineScheduler(
     private val dispatcher: CoroutineDispatcher,

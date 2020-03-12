@@ -24,7 +24,7 @@ import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 
 /**
- * Refer to [io.reactivex.rxjava3.internal.schedulers.NewThreadWorker] implementation.
+ * Refer to [io.reactivex.internal.schedulers.NewThreadWorker] implementation.
  */
 internal class CoroutineWorker(
     private val dispatcher: CoroutineDispatcher,
