@@ -21,7 +21,6 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.internal.disposables.EmptyDisposable
 import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import kotlinx.coroutines.*
-import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 /**
@@ -29,39 +28,32 @@ import java.util.concurrent.TimeUnit
  */
 internal class CoroutineWorker(
     private val dispatcher: CoroutineDispatcher,
-    private val scopeRef: WeakReference<CoroutineScope>
+    private val scope: CoroutineScope
 ) : Scheduler.Worker() {
+
+    private var supervisorJob = SupervisorJob(scope.coroutineContext[Job])
+
     @Volatile
     private var isDisposed = false
-    private var supervisorJob: Job? = null
-
-    init {
-        val scope = scopeRef.get()
-        if (scope != null) {
-            supervisorJob = SupervisorJob(scope.coroutineContext[Job])
-        }
-    }
 
     override fun isDisposed(): Boolean = isDisposed
 
     override fun dispose() {
         if (!isDisposed) {
             isDisposed = true
-            supervisorJob?.cancel()
+            supervisorJob.cancel()
         }
     }
 
     override fun schedule(run: Runnable, delay: Long, unit: TimeUnit): Disposable {
-        val context = supervisorJob ?: return EmptyDisposable.INSTANCE
-        val scope = scopeRef.get() ?: return EmptyDisposable.INSTANCE
-        if (isDisposed || context.isCancelled) {
+        if (isDisposed || supervisorJob.isCancelled) {
             return EmptyDisposable.INSTANCE
         }
 
         val decoratedRun = RxJavaPlugins.onSchedule(run)
-        val job = scope.launch(context) {
+        val job = scope.launch(supervisorJob) {
             withContext(dispatcher) {
-                if (delay > 0L) delay(unit.toMillis(delay)) // non-blocking
+                if (delay > 0L) delay(unit.toMillis(delay))
                 decoratedRun.run()
             }
         }
