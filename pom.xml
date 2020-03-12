@@ -24,7 +24,7 @@
 
     <groupId>io.github.mthli</groupId>
     <artifactId>RxCoroutineSchedulers</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
 
     <properties>
         <kotlin.version>1.3.70</kotlin.version>
